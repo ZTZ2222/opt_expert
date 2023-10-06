@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  backend:
+    build: ./server
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    networks:
+      - optNetwork
+    volumes:
+      - ./server/media:/var/www/media # /var/www/media:/var/www/media
+    env_file:
+      - ./server/.env
+    depends_on:
+      - postgresql-db
+    expose:
+      - "8000:8000"
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    command: ["npm", "start"]
+    networks:
+      - optNetwork
+    expose:
+      - "3000:3000"
+    restart: always
+
+  postgresql-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./postgres-config/.pg-env
+    networks:
+      - optNetwork
+    volumes:
+      - ./postgres-config/database_volume:/var/lib/postgresql/data
+    restart: always
+    expose:
+      - "5432:5432"
+  
+  nginx:
+    build:
+      context: ./nginx
+    networks:
+      - optNetwork
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+    ports:
+      - "80:80"
+
+networks:
+  optNetwork:

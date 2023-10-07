@@ -4,7 +4,7 @@ import { RootState } from "../store";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api",
+    baseUrl: "https://opt-expert.fibo.cloud/api",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.access_token;
       if (token) {

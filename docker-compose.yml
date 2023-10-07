@@ -11,7 +11,7 @@ services:
       - ./server/.env
     depends_on:
       - postgresql-db
-    expose:
+    ports:
       - "8000:8000"
     restart: always
 
@@ -21,7 +21,7 @@ services:
     command: ["npm", "start"]
     networks:
       - optNetwork
-    expose:
+    ports:
       - "3000:3000"
     restart: always
 
@@ -33,9 +33,9 @@ services:
       - optNetwork
     volumes:
       - ./postgres-config/database_volume:/var/lib/postgresql/data
-    restart: always
-    expose:
+    ports:
       - "5432:5432"
+    restart: always
   
   nginx:
     build:
@@ -45,9 +45,9 @@ services:
     depends_on:
       - backend
       - frontend
-    restart: always
     ports:
       - "80:80"
+    restart: always
 
 networks:
   optNetwork:
